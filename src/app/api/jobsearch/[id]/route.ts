@@ -106,9 +106,9 @@ export async function DELETE(
       );
     }
 
-    //await prisma.jobSearch.delete({
-    //  where: { id: jobSearchId },
-    //});
+    await prisma.jobSearch.delete({
+      where: { id: jobSearchId },
+    });
 
     return NextResponse.json(
       { message: "Búsqueda eliminada con éxito" },
@@ -118,6 +118,88 @@ export async function DELETE(
     console.error("Error al eliminar búsqueda:", error);
     return NextResponse.json(
       { message: "Error interno del servidor" },
+      { status: 500 }
+    );
+  }
+}
+
+type JobSearchBody = {
+  company: string;
+  title: string;
+  description: string;
+  location: string;
+  modality: "REMOTE" | "ON_SITE" | "HYBRID";
+  salaryMin: number;
+  salaryMax: number;
+  jobType:
+    | "FULL_TIME"
+    | "PART_TIME"
+    | "FREELANCE"
+    | "CONTRACT"
+    | "INTERNSHIP"
+    | "OTHER";
+};
+
+export async function PUT(
+  req: Request,
+  context: { params: Promise<{ id: string }> }
+) {
+  const { userId, orgId } = await auth();
+  if (!userId || !orgId) {
+    return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
+  }
+
+  const jobSearchId = (await context.params).id;
+
+  const {
+    company,
+    title,
+    description,
+    location,
+    modality,
+    salaryMin,
+    salaryMax,
+    jobType,
+  } = (await req.json()) as JobSearchBody;
+
+  if (
+    !company ||
+    !title ||
+    !description ||
+    !location ||
+    !modality ||
+    !salaryMin ||
+    !salaryMax ||
+    !jobType
+  ) {
+    return NextResponse.json(
+      { message: "Missing required fields" },
+      { status: 400 }
+    );
+  }
+
+  try {
+    const updatedJobSearch = await prisma.jobSearch.update({
+      where: {
+        id: jobSearchId,
+      },
+      data: {
+        company,
+        title,
+        description,
+        location,
+        modality,
+        salaryMin: Number(salaryMin),
+        salaryMax: Number(salaryMax),
+        jobType,
+      },
+    });
+
+    return NextResponse.json(updatedJobSearch, { status: 200 });
+  } catch (error) {
+    console.error("Error updating job search:", error);
+    return NextResponse.json(
+      { message: "Internal server error" },
       { status: 500 }
     );
   }
