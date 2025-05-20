@@ -1,36 +1,61 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# 🧠 TalentSync — Plataforma de reclutamiento colaborativo con Clerk
 
-## Getting Started
+> Plataforma que ayuda a equipos de reclutamiento a organizar búsquedas laborales, gestionar candidatos y colaborar internamente usando Clerk como núcleo de autenticación y control de acceso por organizaciones.
 
-First, run the development server:
+## 🚀 Demo
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+👉 [Ver demo en Vercel](https://talentsync.vercel.app)
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+> Usuario demo: Podés loguearte con Google gracias a Clerk. Si estás en una organización, podés empezar a crear búsquedas directamente.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## 🧩 ¿Qué hace TalentSync?
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+- Administra búsquedas laborales creadas por reclutadores o administradores de empresa.
+- Los usuarios se agrupan por organizaciones (gracias a Clerk), y cada búsqueda pertenece a una organización.
+- Reclutadores pueden mover candidatos entre etapas, agregar preguntas personalizadas y más.
+- Clerk maneja completamente la autenticación, roles y gestión de organizaciones.
+- El sistema se adapta tanto a reclutamiento IT como general.
 
-## Learn More
+## 📸 Capturas
 
-To learn more about Next.js, take a look at the following resources:
+| Página principal de una búsqueda           | Vista de organización                |
+| ------------------------------------------ | ------------------------------------ |
+| ![search](./public/screenshots/search.png) | ![org](./public/screenshots/org.png) |
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## 🛠️ ¿Cómo usamos Clerk?
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+- **Autenticación con Clerk**: Cada usuario se autentica mediante Clerk. Se utiliza `@clerk/nextjs` con App Router.
+- **Organizaciones**: TalentSync usa las _organizations_ de Clerk para agrupar usuarios. Solo usuarios dentro de una misma organización pueden ver/crear búsquedas compartidas.
+- **Roles**: Se reconoce al administrador de la empresa (admin) y reclutadores mediante los roles dentro de la organización.
+- **Protección de rutas**: Las rutas están protegidas por `auth()` y `currentUser()` de Clerk.
+- **Acceso a `userId` y `organizationId`**: Se usa `auth()` para extraer `userId` y `orgId` en el backend al momento de crear o leer búsquedas.
 
-## Deploy on Vercel
+## ⚙️ Tecnologías
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+- **Next.js 14 (App Router)**
+- **TypeScript**
+- **Tailwind CSS**
+- **Prisma ORM**
+- **PostgreSQL**
+- **Clerk (auth + organizations)**
+- **Vercel**
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+## 📂 Repositorio
+
+Este es el repositorio público del proyecto:
+
+🔗 [https://github.com/jhonathan-dev/talentsync](https://github.com/jhonathan-dev/talentsync)
+
+Incluye todo el código fuente, instrucciones y documentación adicional.
+
+## 📜 Requisitos cumplidos
+
+- ✅ Proyecto original e inédito (sin usuarios ni uso previo)
+- ✅ Uso notorio de Clerk (auth, roles, organizations)
+- ✅ Proyecto publicado con demo funcional
+- ✅ Repositorio público con documentación
+- ✅ Presentado en issue pública con plantilla completa
+
+---
+
+Si querés probar el proyecto o sumarte a la conversación, ¡te esperamos!
