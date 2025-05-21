@@ -2,6 +2,24 @@ import { NextResponse } from "next/server";
 import { auth, clerkClient } from "@clerk/nextjs/server";
 import prisma from "@/lib/prisma";
 
+type JobSearchBody = {
+  company: string;
+  title: string;
+  description: string;
+  location: string;
+  modality: "REMOTE" | "ON_SITE" | "HYBRID";
+  salaryMin: number;
+  salaryMax: number;
+  createdByClerkId: string;
+  jobType:
+    | "FULL_TIME"
+    | "PART_TIME"
+    | "FREELANCE"
+    | "CONTRACT"
+    | "INTERNSHIP"
+    | "OTHER";
+};
+
 export async function GET() {
   try {
     const { userId, orgId } = await auth();
@@ -18,12 +36,16 @@ export async function GET() {
       },
     });
 
-    const recruiterIds = [...new Set(jobs.map((job) => job.createdByClerkId))];
+    const recruiterIds = [
+      ...new Set(
+        jobs.map((job: { createdByClerkId: string }) => job.createdByClerkId)
+      ),
+    ];
 
     const recruiterClient = await clerkClient();
 
     const recruiters = await Promise.all(
-      recruiterIds.map((id) => recruiterClient.users.getUser(id))
+      recruiterIds.map((id) => recruiterClient.users.getUser(id as string))
     );
 
     const recruiterMap = new Map(
@@ -40,7 +62,7 @@ export async function GET() {
       ])
     );
 
-    const jobsWithRecruiters = jobs.map((job) => ({
+    const jobsWithRecruiters = jobs.map((job: JobSearchBody) => ({
       ...job,
       recruiter: recruiterMap.get(job.createdByClerkId) || null,
     }));

@@ -1,13 +1,22 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { Suspense, useEffect, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useOrganization, useOrganizationList, useUser } from "@clerk/nextjs";
 import { Button } from "@/components/ui/Button";
 import toast from "react-hot-toast";
 import { SignUp } from "@clerk/nextjs";
+import RecruitmentLoading from "@/components/ui/RecruitmentLoading";
 
 export default function OnboardingPage() {
+  return (
+    <Suspense fallback={<RecruitmentLoading />}>
+      <OnboardingContent />
+    </Suspense>
+  );
+}
+
+function OnboardingContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const { user, isLoaded: isUserLoaded } = useUser();

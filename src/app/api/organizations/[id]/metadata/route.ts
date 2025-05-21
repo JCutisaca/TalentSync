@@ -3,13 +3,15 @@ import { NextResponse } from "next/server";
 
 export async function PATCH(
   req: Request,
-  { params }: { params: { id: string } }
+  context: { params: Promise<{ id: string }> }
 ) {
   try {
     const { userId } = await auth();
     if (!userId) {
       return new NextResponse("No autorizado", { status: 401 });
     }
+
+    const params = await context.params;
 
     const body = await req.json();
     const { publicMetadata } = body;

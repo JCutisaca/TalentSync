@@ -1,14 +1,17 @@
 import { auth, clerkClient } from "@clerk/nextjs/server";
 import { NextResponse } from "next/server";
 
-export async function POST(req: Request, context: { params: { id: string } }) {
+export async function POST(
+  req: Request,
+  context: { params: Promise<{ id: string }> }
+) {
   try {
     const { userId } = await auth();
     if (!userId) {
       return new NextResponse("No autorizado", { status: 401 });
     }
 
-    const { id } = await Promise.resolve(context.params);
+    const id = (await context.params).id;
     const clerk = await clerkClient();
 
     const memberships = await clerk.organizations.getOrganizationMembershipList(

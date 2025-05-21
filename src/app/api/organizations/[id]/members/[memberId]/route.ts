@@ -3,13 +3,15 @@ import { NextResponse } from "next/server";
 
 export async function DELETE(
   req: Request,
-  { params }: { params: { id: string; memberId: string } }
+  context: { params: Promise<{ id: string; memberId: string }> }
 ) {
   try {
     const { userId } = await auth();
     if (!userId) {
       return new NextResponse("No autorizado", { status: 401 });
     }
+
+    const params = await context.params;
 
     const { id: organizationId, memberId } = params;
     const clerk = await clerkClient();
